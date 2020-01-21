@@ -1,0 +1,189 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "DynamicPrivateIp": {
+            "type": "string"
+        },
+        "ResourceGroupName": {
+            "type": "string"
+        },
+        "DataDiskName": {
+            "type": "string"
+        },
+        "vnetResourceGroup": {
+            "type": "string"
+        },
+        "virtualNetworkName": {
+            "type": "string"
+        },
+        "subnetName": {
+            "type": "string"
+        },
+        "networkSecurityGroupName": {
+            "type": "string"
+        },
+        "tagValues": {
+            "type": "object"
+        },
+        "VMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "VMTemplateURL": {
+            "type": "string",
+            "metadata": {
+                "description": "URL for the template for deploying custom Virtual Machine."
+            }
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "virtualMachineSize": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_A1",
+                "Standard_B1s",
+                "Standard_F2s",
+                "Standard_A8_v2",
+                "Standard_F2s_v2",
+                "Standard_F4s",
+                "Standard_F4s_v2",
+                "Standard_DS2_v2",
+                "Standard_DS3_v2",
+                "Standard_DS4_v2",
+                "Standard_DS5_v2",
+                "Standard_F8s_v2",
+                "Standard_F4",
+                "Standard_D4s_v3"
+                
+            ],
+            "metadata": {
+                "description": "Virtual Machine Size"
+            }
+        },
+        "OSdiskstorageskuType": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_ZRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Storage class to be used for OS disk."
+            }
+        },
+        "availabilitySetName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+        "nicName": "[concat(parameters('VMName'), '-nic')]",
+        "dataDiskID": "[resourceId(parameters('ResourceGroupName') ,'Microsoft.Compute/disks',parameters('DataDiskName'))]"
+    },
+    "resources": [
+        {
+            "name": "[variables('nicName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-05-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAddress": "[if(empty(parameters('DynamicPrivateIp')), json('null'), parameters('DynamicPrivateIp'))]",
+                            "privateIPAllocationMethod": "[if(empty(parameters('DynamicPrivateIp')), 'Dynamic', 'Static')]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-03-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('VMName')]",
+            "tags": "[parameters('tagValues')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('virtualMachineSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('VMName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVmAgent": true
+                    }
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('OSdiskstorageskuType')]"
+                        }
+                    },
+                    "imageReference": {
+                        "id": "[parameters('VMTemplateURL')]"
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "name": "[parameters('DataDiskName')]",
+                            "createOption": "attach",
+                            "managedDisk": {
+                                "id": "[variables('dataDiskID')]"
+                            }
+                        }
+                    ]
+                },
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                        }
+                    ]
+                },
+                 "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": false
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+
+    }
+}

@@ -1,0 +1,504 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "ResourceGroupName": {
+      "type": "string"
+    },
+    "PBResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
+    },
+    "DB01ResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
+    },
+    "DB02ResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
+    },
+    "PBavailabilitySetName": {
+      "type": "string"
+    },
+    "DB01availabilitySetName": {
+      "type": "string"
+    },
+    "DB02availabilitySetName": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "ResourceGroupLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "PBDynamicPrivateIp": {
+      "type": "string"
+    },
+    "DB01DynamicPrivateIp": {
+      "type": "string"
+    },
+    "DB02DynamicPrivateIp": {
+      "type": "string"
+    },
+    "PBDataDiskName": {
+      "type": "string"
+    },
+    "DB01DataDiskName": {
+      "type": "string"
+    },
+    "DB02DataDiskName": {
+      "type": "string"
+    },
+    "PBvnetResourceGroup": {
+      "type": "string"
+    },
+    "DB01vnetResourceGroup": {
+      "type": "string"
+    },
+    "DB02vnetResourceGroup": {
+      "type": "string"
+    },
+    "PBvirtualNetworkName": {
+      "type": "string"
+    },
+    "DB01virtualNetworkName": {
+      "type": "string"
+    },
+    "DB02virtualNetworkName": {
+      "type": "string"
+    },
+    "PBsubnetName": {
+      "type": "string"
+    },
+    "DB01subnetName": {
+      "type": "string"
+    },
+    "DB02subnetName": {
+      "type": "string"
+    },
+    "PBnetworkSecurityGroupName": {
+      "type": "string"
+    },
+    "DB01networkSecurityGroupName": {
+      "type": "string"
+    },
+    "DB02networkSecurityGroupName": {
+      "type": "string"
+    },
+    "tagValues": {
+      "type": "object"
+    },
+    "PolicybillingVMName": {
+      "type": "string"
+    },
+    "PolicybillingvirtualMachineSize": {
+      "type": "string"
+    },
+    "PolicybillingOSdiskstorageskuType": {
+      "type": "string"
+    },
+    "PolicybillingVMTemplateURL": {
+      "type": "string"
+    },
+    "DB01VMName": {
+      "type": "string"
+    },
+    "DB02VMName": {
+      "type": "string"
+    },
+    "DB01virtualMachineSize": {
+      "type": "string"
+    },
+    "DB02virtualMachineSize": {
+      "type": "string"
+    },
+    "DB01OSdiskstorageskuType": {
+      "type": "string"
+    },
+    "DB02OSdiskstorageskuType": {
+      "type": "string"
+    },
+    "DB01VMTemplateURL": {
+      "type": "string"
+    },
+    "DB02VMTemplateURL": {
+      "type": "string"
+    },
+    "DomainName": {
+      "type": "string"
+    },
+    "DomainUser": {
+      "type": "string"
+    },
+    "DomainPassword": {
+      "type": "string"
+    },
+    "Oupath": {
+      "type": "string"
+    },
+    "Authpwd": {
+      "type": "string"
+    },
+    "BaseAppVM": {
+      "type": "string"
+    },
+    "BaseDB01": {
+      "type": "string"
+    },
+    "BaseDB02": {
+      "type": "string"
+    },
+    "ODBCusid": {
+      "type": "string"
+    },
+    "ODBCpsd": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "TemplateFolder": "nestedtemplates",
+    "customVM-TemplateFileName": "customvm.json",
+    "customVMExtension-TemplateFileName": "customvmextension.json",
+    "customDBVMExtension-TemplateFileName":"dbvmextension.json",
+    "InsightsExtension-TemplateFileName":"InsightsExtension.json"
+  },
+  "resources": [
+    {
+      "name": "policybillingcustomVM",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "DB02customVM"
+      ],
+      "resourceGroup": "[parameters('PBResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('TemplateFolder'), '/', variables('customVM-TemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ResourceGroupName": {
+            "value": "[parameters('PBResourceGroupName')]"
+          },
+          "DataDiskName": {
+            "value": "[parameters('PBDataDiskName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "VMName": {
+            "value": "[parameters('PolicybillingVMName')]"
+          },
+          "virtualMachineSize": {
+            "value": "[parameters('PolicybillingvirtualMachineSize')]"
+          },
+          "OSdiskstorageskuType": {
+            "value": "[parameters('PolicybillingOSdiskstorageskuType')]"
+          },
+          "availabilitySetName": {
+            "value": "[parameters('PBavailabilitySetName')]"
+          },
+          "DynamicPrivateIp": {
+            "value": "[parameters('PBDynamicPrivateIp')]"
+          },
+          "vnetResourceGroup": {
+            "value": "[parameters('PBvnetResourceGroup')]"
+          },
+          "virtualNetworkName": {
+            "value": "[parameters('PBvirtualNetworkName')]"
+          },
+          "subnetName": {
+            "value": "[parameters('PBsubnetName')]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[parameters('PBnetworkSecurityGroupName')]"
+          },
+          "tagValues": {
+            "value": "[parameters('tagValues')]"
+          },
+          "VMTemplateURL": {
+            "value": "[parameters('PolicybillingVMTemplateURL')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "policybillingcustomVMExtension",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "policybillingcustomVM"
+      ],
+      "resourceGroup": "[parameters('PBResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('TemplateFolder'), '/', variables('customVMExtension-TemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[parameters('policybillingVMName')]"
+          },
+          "DBVMName": {
+            "value": "[parameters('DB01VMName')]"
+          },
+          "DB02VMName": {
+            "value": "[parameters('DB02VMName')]"
+          },
+          "DomainName": {
+            "value": "[parameters('DomainName')]"
+          },
+          "DomainUser": {
+            "value": "[parameters('DomainUser')]"
+          },
+          "DomainPassword": {
+            "value": "[parameters('DomainPassword')]"
+          },
+          "Oupath": {
+            "value": "[parameters('Oupath')]"
+          },
+          "Authpwd": {
+            "value": "[parameters('Authpwd')]"
+          },
+          "BaseAppVM": {
+            "value": "[parameters('BaseAppVM')]"
+          },
+          "BaseDB01": {
+            "value": "[parameters('BaseDB01')]"
+          },
+          "BaseDB02": {
+            "value": "[parameters('BaseDB02')]"
+          },
+          "ODBCusid": {
+            "value": "[parameters('ODBCusid')]"
+          },
+          "ODBCpsd": {
+            "value": "[parameters('ODBCpsd')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "DB01customVM",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+      ],
+      "resourceGroup": "[parameters('DB01ResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('TemplateFolder'), '/', variables('customVM-TemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ResourceGroupName": {
+            "value": "[parameters('DB01ResourceGroupName')]"
+          },
+          "DataDiskName": {
+            "value": "[parameters('DB01DataDiskName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "VMName": {
+            "value": "[parameters('DB01VMName')]"
+          },
+          "virtualMachineSize": {
+            "value": "[parameters('DB01virtualMachineSize')]"
+          },
+          "OSdiskstorageskuType": {
+            "value": "[parameters('DB01OSdiskstorageskuType')]"
+          },
+          "availabilitySetName": {
+            "value": "[parameters('DB01availabilitySetName')]"
+          },
+          "DynamicPrivateIp": {
+            "value": "[parameters('DB01DynamicPrivateIp')]"
+          },
+          "vnetResourceGroup": {
+            "value": "[parameters('DB01vnetResourceGroup')]"
+          },
+          "virtualNetworkName": {
+            "value": "[parameters('DB01virtualNetworkName')]"
+          },
+          "subnetName": {
+            "value": "[parameters('DB01subnetName')]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[parameters('DB01networkSecurityGroupName')]"
+          },
+          "tagValues": {
+            "value": "[parameters('tagValues')]"
+          },
+          "VMTemplateURL": {
+            "value": "[parameters('DB01VMTemplateURL')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "DB01customVMExtension",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "DB01customVM"
+      ],
+      "resourceGroup": "[parameters('DB01ResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('TemplateFolder'), '/', variables('customDBVMExtension-TemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMName": {
+            "value": "[parameters('DB01VMName')]"
+          },
+          "DomainName": {
+            "value": "[parameters('DomainName')]"
+          },
+          "DomainUser": {
+            "value": "[parameters('DomainUser')]"
+          },
+          "DomainPassword": {
+            "value": "[parameters('DomainPassword')]"
+          },
+          "Oupath": {
+            "value": "[parameters('Oupath')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "DB02customVM",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "DB01customVM",
+        "DB01customVMExtension"
+
+      ],
+      "resourceGroup": "[parameters('DB02ResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('TemplateFolder'), '/', variables('customVM-TemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ResourceGroupName": {
+            "value": "[parameters('DB02ResourceGroupName')]"
+          },
+          "DataDiskName": {
+            "value": "[parameters('DB02DataDiskName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "VMName": {
+            "value": "[parameters('DB02VMName')]"
+          },
+          "virtualMachineSize": {
+            "value": "[parameters('DB02virtualMachineSize')]"
+          },
+          "OSdiskstorageskuType": {
+            "value": "[parameters('DB02OSdiskstorageskuType')]"
+          },
+          "availabilitySetName": {
+            "value": "[parameters('DB02availabilitySetName')]"
+          },
+          "DynamicPrivateIp": {
+            "value": "[parameters('DB02DynamicPrivateIp')]"
+          },
+          "vnetResourceGroup": {
+            "value": "[parameters('DB02vnetResourceGroup')]"
+          },
+          "virtualNetworkName": {
+            "value": "[parameters('DB02virtualNetworkName')]"
+          },
+          "subnetName": {
+            "value": "[parameters('DB02subnetName')]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[parameters('DB02networkSecurityGroupName')]"
+          },
+          "tagValues": {
+            "value": "[parameters('tagValues')]"
+          },
+          "VMTemplateURL": {
+            "value": "[parameters('DB02VMTemplateURL')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "InsightsExtension",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "DB02customVM"
+      ],
+      "resourceGroup": "[parameters('DB02ResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('TemplateFolder'), '/', variables('InsightsExtension-TemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "DB01VMName": {
+            "value": "[parameters('DB01VMName')]"
+          },
+          "DB02VMName": {
+            "value": "[parameters('DB02VMName')]"
+          },
+          "DomainName": {
+            "value": "[parameters('DomainName')]"
+          },
+          "DomainUser": {
+            "value": "[parameters('DomainUser')]"
+          },
+          "DomainPassword": {
+            "value": "[parameters('DomainPassword')]"
+          },
+          "Oupath": {
+            "value": "[parameters('Oupath')]"
+          },
+          "BaseDB01": {
+            "value": "[parameters('BaseDB01')]"
+          },
+          "BaseDB02": {
+            "value": "[parameters('BaseDB02')]"
+          },
+          "ODBCusid": {
+            "value": "[parameters('ODBCusid')]"
+          },
+          "ODBCpsd": {
+            "value": "[parameters('ODBCpsd')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

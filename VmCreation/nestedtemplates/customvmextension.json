@@ -1,0 +1,114 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "VMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },       
+        "DBVMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Data Base Virtual Machine."
+            }
+        },
+        "DB02VMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Data Base Virtual Machine."
+            }
+        },
+        "DomainName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the domain."
+            }
+        },
+        "DomainUser": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the domain user."
+            }
+        },
+        "DomainPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "password for domain."
+            }
+        },
+        "Oupath": {
+            "type": "string",
+            "metadata": {
+                "description": "oupath for domain."
+            }
+        },
+        "Authpwd": {
+            "type": "string"
+        },
+        "BaseAppVM": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the BASE Virtual Machine."
+            }
+        },
+        "BaseDB01": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the DB01 BASE Virtual Machine."
+            }
+        },
+        "BaseDB02": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the DB02 BASE Virtual Machine."
+            }
+        },
+        "ODBCusid": {
+            "type": "string",
+            "metadata": {
+                "description": "ODBC user id."
+            }
+        },
+        "ODBCpsd": {
+            "type": "string",
+            "metadata": {
+                "description": "ODBC password."
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "apiVersion": "2018-06-01",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('VMName'),'/CustomScriptExtension')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.7",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "https://mgidcoddemodiag.blob.core.windows.net/dcodclone/customscripts/postconfig.ps1"
+                ],
+                "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File customscripts/postconfig.ps1',' -vmname ', parameters('VMName'),' -dbvmname ', parameters('DBVMName'),' -db02vmname ', parameters('DB02VMName'),' -domainname ', parameters('DomainName'),' -domainuser ', parameters('DomainUser'),' -domainpasswd ', parameters('DomainPassword'),' -oupath ', parameters('Oupath'),' -baseappvm ', parameters('BaseAppVM'),' -basedbvm ', parameters('BaseDB01'),' -basedb02vm ', parameters('BaseDB02'),' -ODBCusid ', parameters('ODBCusid'),' -ODBCpsd ', parameters('ODBCpsd'),' -Authpwd ', parameters('Authpwd'))]"
+              }
+            }
+        }
+    ],
+    "outputs": {
+
+    }
+}

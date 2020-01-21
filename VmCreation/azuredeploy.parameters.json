@@ -1,0 +1,163 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.1",
+  "parameters": {
+    "_artifactsLocation": {
+      "value": ""
+    },
+    "ResourceGroupName": {
+      "value": ""
+    },
+    "PBDataDiskName": {
+      "value": ""
+    },
+    "DB01DataDiskName": {
+      "value": ""
+    },
+    "DB02DataDiskName": {
+      "value": ""
+    },
+    "PBResourceGroupName": {
+      "value": ""
+    },
+    "DB01ResourceGroupName": {
+      "value": ""
+    },
+    "DB02ResourceGroupName": {
+      "value": ""
+    },
+    "PBavailabilitySetName": {
+      "value": ""
+    },
+    "DB01availabilitySetName": {
+      "value": ""
+    },
+    "DB02availabilitySetName": {
+      "value": ""
+    },
+    "PolicybillingVMName": {
+      "value": ""
+    },
+    "PolicybillingvirtualMachineSize": {
+      "value": ""
+    },
+    "adminUsername": {
+      "value": ""   
+    },
+    "adminPassword": {
+      "value": ""
+    },
+    "PolicybillingOSdiskstorageskuType": {
+      "value": ""
+    },
+    "DB01OSdiskstorageskuType": {
+      "value": ""
+    },
+    "DB02OSdiskstorageskuType": {
+      "value": ""
+    },
+    "PolicybillingVMTemplateURL": {
+      "value": ""
+    },
+    "DB01VMTemplateURL": {
+      "value": ""
+    },
+    "DB02VMTemplateURL": {
+      "value": ""
+    },
+    "DB01VMName": {
+      "value": ""
+    },
+    "DB02VMName": {
+      "value": ""
+    },
+    "DB01virtualMachineSize": {
+      "value": ""
+    },
+    "DB02virtualMachineSize": {
+      "value": ""
+    },
+    "PBDynamicPrivateIp": {
+      "value": ""
+    },
+    "DB01DynamicPrivateIp": {
+      "value": ""
+    },
+    "DB02DynamicPrivateIp": {
+      "value": ""
+    },
+    "PBvnetResourceGroup": {
+      "value": ""
+    },
+    "DB01vnetResourceGroup": {
+      "value": ""
+    },
+    "DB02vnetResourceGroup": {
+      "value": ""
+    },
+    "PBvirtualNetworkName": {
+      "value": ""
+    },
+    "DB01virtualNetworkName": {
+      "value": ""
+    },
+    "DB02virtualNetworkName": {
+      "value": ""
+    },
+    "PBsubnetName": {
+      "value": ""
+    },
+    "DB01subnetName": {
+      "value": ""
+    },
+    "DB02subnetName": {
+      "value": ""
+    },
+    "PBnetworkSecurityGroupName": {
+      "value": ""
+    },
+    "DB01networkSecurityGroupName": {
+      "value": ""
+    },
+    "DB02networkSecurityGroupName": {
+      "value": ""
+    },
+    "DomainName": {
+      "value": ""
+    },
+    "DomainUser": {
+      "value": ""
+    },
+    "DomainPassword": {
+      "value": ""
+    },
+    "Oupath": {
+      "value": ""
+    },
+    "Authpwd": {
+      "value": ""
+    },
+    "BaseAppVM": {
+      "value": ""
+    },    
+    "BaseDB01": {
+      "value": ""
+    },
+    "BaseDB02": {
+      "value": ""
+    },
+    "ODBCusid": {
+      "value": ""
+    },
+    "ODBCpsd": {
+      "value": ""
+    },
+    "tagValues": {
+      "value":  {
+        "Owner":  "DCOD",
+        "Template":  "test",
+        "Purpose":  "testing"
+    }
+    }
+  }
+}

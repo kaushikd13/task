@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "VMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "DomainName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "DomainUser": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "DomainPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "Oupath": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "apiVersion": "2018-06-01",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('VMName'),'/CustomScriptExtension')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.7",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "https://mgidcoddemodiag.blob.core.windows.net/dcodclone/customscripts/dbpostconfig.ps1"
+                ],
+               "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File customscripts/dbpostconfig.ps1',' -vmname ',parameters('VMName'),' -domainname ',parameters('DomainName'),' -domainuser ',parameters('DomainUser'),' -domainpasswd ',parameters('DomainPassword'),' -oupath ',parameters('Oupath'))]"
+              }
+            }
+          }
+    ],
+    "outputs": {
+
+    }
+}

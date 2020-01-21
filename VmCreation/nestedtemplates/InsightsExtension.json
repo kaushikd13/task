@@ -1,0 +1,99 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "DomainName": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "DomainUser": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "DomainPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "Oupath": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "DB01VMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the new DB01 Name."
+            }
+        },
+        "DB02VMName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the new DB02 Name."
+            }
+        },
+        "BaseDB01": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the Existing DB01 Name."
+            }
+        },
+        "BaseDB02": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the Existing DB02 Name."
+            }
+        },
+        "ODBCusid": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        },
+        "ODBCpsd": {
+            "type": "string",
+            "metadata": {
+                "description": "name for the Virtual Machine."
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "apiVersion": "2018-06-01",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('DB02VMName'),'/CustomScriptExtension')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.7",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "https://mgidcoddemodiag.blob.core.windows.net/dcodclone/customscripts/InsightsPostConfig.ps1"
+                ],
+               "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File customscripts/InsightsPostConfig.ps1',' -dbvmname ',parameters('DB01VMName'),' -db02vmname ',parameters('DB02VMName'),' -basedbvm ',parameters('BaseDB01'),' -basedb02vm ',parameters('BaseDB02'),' -domainname ',parameters('DomainName'),' -domainuser ',parameters('DomainUser'),' -domainpasswd ',parameters('DomainPassword'),' -oupath ',parameters('Oupath'),' -ODBCusid ',parameters('ODBCusid'),' -ODBCpsd ',parameters('ODBCpsd'))]"
+              }
+            }
+          }
+    ],
+    "outputs": {
+
+    }
+}
